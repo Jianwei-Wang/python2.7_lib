@@ -10,3 +10,11 @@ _mailinglist
 .tox
 .cache/
 .idea/
+*.a
+*.so
+*.o
+*.png
+image
+theme
+*.patch
+*.swp
