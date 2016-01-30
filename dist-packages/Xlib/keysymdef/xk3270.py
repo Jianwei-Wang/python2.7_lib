@@ -1,0 +1,1 @@
+../../../../../share/pyshared/Xlib/keysymdef/xk3270.py

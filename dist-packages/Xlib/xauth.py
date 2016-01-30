@@ -1,0 +1,1 @@
+../../../../share/pyshared/Xlib/xauth.py

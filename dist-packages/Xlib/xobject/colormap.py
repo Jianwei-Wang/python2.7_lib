@@ -1,0 +1,1 @@
+../../../../../share/pyshared/Xlib/xobject/colormap.py
