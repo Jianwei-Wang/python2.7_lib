@@ -9,18 +9,40 @@ socket are available as methods of the socket object.
 
 Functions:
 
+#有些函数没有找到python实现,莫非是直接调用c实现?
 socket() -- create a new socket object
+# socket(family,type[,proto])
+# >>> s=socket(AF_INET,SOCK_STREAM)
 socketpair() -- create a pair of new socket objects [*]
 fromfd() -- create a socket object from an open file descriptor [*]
 gethostname() -- return the current hostname
+# >>> socket.gethostname()
+# 'lenovo'
 gethostbyname() -- map a hostname to its IP number
+# >>> socket.gethostbyname('lenovo')
+# '192.168.1.4'
+# >>> socket.gethostbyname('www.jb51.net')
+# '222.76.216.16'
 gethostbyaddr() -- map an IP number or hostname to DNS info
+# >>> socket.gethostbyaddr('127.0.1.1')
+# ('wangjw-pc', [], ['127.0.1.1'])
 getservbyname() -- map a service name and a protocol name to a port number
+# >>> socket.getservbyname('http','tcp')
+# 80
+# >>> socket.getservbyname('ftp','tcp')
+# 21
 getprotobyname() -- map a protocol name (e.g. 'tcp') to a number
+# >>> socket.getprotobyname('tcp')
+# 6
 ntohs(), ntohl() -- convert 16, 32 bit int from network to host byte order
 htons(), htonl() -- convert 16, 32 bit int from host to network byte order
+# 这四个函数用来做字节序转换 net to host 或者 host to net
 inet_aton() -- convert IP addr string (123.45.67.89) to 32-bit packed format
+# >>> socket.inet_aton('222.76.216.16')
+# '\xdeL\xd8\x10'
 inet_ntoa() -- convert 32-bit packed format IP to string (123.45.67.89)
+# >>> socket.inet_ntoa('\xdeL\xd8\x10')
+# '222.76.216.16'
 ssl() -- secure socket layer support (only available if configured)
 socket.getdefaulttimeout() -- get the default timeout value
 socket.setdefaulttimeout() -- set the default timeout value
@@ -120,7 +142,11 @@ if sys.platform.lower().startswith("win"):
     __all__.append("errorTab")
 
 
-
+#localhost（意为“本地主机”）是给回路网络接口（loopback）的一个标准主机名，相对应的IP地址为127.0.0.1
+#localhost与计算机名的区别:
+#1. localhost由本机DNS映射的
+#2. PC-201004151110（计算机名）则是由gethostbyname函数解析得到IP后利用IP访问的，IP访问是最直接的了。
+# 返回关于给定主机名的全域名
 def getfqdn(name=''):
     """Get fully qualified domain name from name.
 
@@ -132,9 +158,9 @@ def getfqdn(name=''):
     """
     name = name.strip()
     if not name or name == '0.0.0.0':
-        name = gethostname()
+        name = gethostname() #返回本地主机的标准主机名(计算机名)
     try:
-        hostname, aliases, ipaddrs = gethostbyaddr(name)
+        hostname, aliases, ipaddrs = gethostbyaddr(name) #通过ip地址获得主机名称,测试除了路由其他获得的主机名都是localhost?
     except error:
         pass
     else:
@@ -232,6 +258,7 @@ for _m in _socketmethods:
 
 socket = SocketType = _socketobject
 
+#把一个socket封装成一个文件,把对socket的操作变成对文件的操作
 class _fileobject(object):
     """Faux file object attached to a socket object."""
 
@@ -534,6 +561,7 @@ class _fileobject(object):
 
 _GLOBAL_DEFAULT_TIMEOUT = object()
 
+#带超时的connect,创建一个socket并连接,成功则返回socket对象
 def create_connection(address, timeout=_GLOBAL_DEFAULT_TIMEOUT,
                       source_address=None):
     """Connect to *address* and return the socket object.
